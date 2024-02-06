@@ -30,24 +30,20 @@ for /F %%F in ('dir *.pcap /b') do (
     set "File!FileCount!=%%F"
 )
 
-::Put all filtered files in a folder named "Filtered(followed by Format)" 
-if exist Filtered_%Format% rd /s /q Filtered_%Format%
-mkdir Filtered_%Format%
+::Put all filtered files in a folder named "Filtered" 
+if exist Filtered rd /s /q Filtered
+mkdir Filtered
 
-::filter and save all .pcap files in the folder "Filtered(followed by Format)"
+::filter and save all .pcap files in the folder "Filtered"
 for /L %%N in (1 1 %FileCount%) do (
-    set file="./Filtered_%Format%/Filtered_!file%%N!"
+    set file="./Filtered/Filtered_!file%%N!"
     tshark -n -r !file%%N! -w !file! %FilterCommand%
 )
 
-::Merge all filtered files in the "Filtered(followed by Format)" folder
-cd ./Filtered_%Format%
+::Merge all filtered files in the "Filtered" folder
+cd ./Filtered
 mergecap *.pcap -w ..\Merged\Merged_%Format%.pcap
 
 ::delete temporary filtered files
 cd ..\
-rd /s /q Filtered_%Format%
-
-::Debug text, safe to delete
-echo Files filtered and merged!
-::pause
+rd /s /q Filtered
