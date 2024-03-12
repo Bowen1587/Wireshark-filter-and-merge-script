@@ -29,7 +29,7 @@ set AutoReplace=no
 
 ::Set this with "yes" or "no" depending on if you want to let the script auto-correct *the naming of the merged file*
 ::default: yes
-set AutoCorrectRange=no
+set AutoCorrectRange=yes
 
 ::Path to TShark and Mergecap (you can also use "tshark" and "mergecap" if the enviornment variable is already set up)
 set PathToTShark="C:\Program Files\Wireshark\tshark.exe"
@@ -122,15 +122,20 @@ set Format=%Start%--%End%
 ::Preemptively check if the same merged file name exist
 if exist Merged\Merged_%Format%.pcap (
     if %AutoReplace%==yes goto :Replace
+    echo:
     echo *WARNING* Merged_%Format:"=%.pcap already exist, continuing means to replace said file
     echo (control + c to terminate the script^)
     pause
+    echo:
 :Replace
     echo Ready to replace Merged_%Format:"=%.pcap
 )
 
 
 ::Get and store the filenames of all .pcap files in the folder
+echo:
+echo ---------------------------------------------------
+echo:
 echo Filtering from %Start% to %End% :
 set FileCount=0
 for /F %%F in ('dir *.pcap /b') do (
@@ -181,11 +186,15 @@ goto :break
 :FilteringComplete
 cd ..\
 rd /s /q Filtered
+echo:
 echo -- Filtering completed --
+echo:
 pause
 goto :eof
 
 ::break label to catch different kinds of errors
 :break
+echo:
 echo -- Script terminated --
+echo:
 pause
